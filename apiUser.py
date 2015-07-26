@@ -2,33 +2,15 @@ import requests
 
 
 def main():
-	url = "https://api.guildwars2.com/v2/commerce/listings/"
 
-	result = requests.get(url).json()
-	print "NUMBER OF IDS: " + str(len(result))
+	results = requests.get("http://www.gw2spidy.com/api/v0.9/json/all-items/all").json()["results"]
 
 	list = []
 
-	for id in result:
-		newUrl = url + str(id)
-		itemListings = requests.get(newUrl).json()
-		print "TRYING " + str(id)
-		print "LISTINGS: " + str(getNumberOfListings(itemListings))
-		if getNumberOfListings(itemListings) > 2000:
-			list.append(id)
+	for item in results:
+		if item["offer_availability"] > 2000:
+			list.append((item["name"], item["offer_availability"]))
 
-
-	print "DONE"
 	print list
-
-
-
-def getNumberOfListings(item):
-	total = 0
-	buys = item["buys"]
-	for d in buys:
-		total += d["listings"]
-	return total 
-
 
 main()
